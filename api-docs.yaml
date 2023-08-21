@@ -1,0 +1,338 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /shipments/{shipmentId}/receive:
+    put:
+      tags:
+      - shipment-controller
+      operationId: receiveShipment
+      parameters:
+      - name: X-PTracker-Office-Id
+        in: header
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shipmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: received
+        in: query
+        required: true
+        schema:
+          type: boolean
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShipmentDto'
+  /shipments/{shipmentId}/departure:
+    put:
+      tags:
+      - shipment-controller
+      operationId: registerDeparture
+      parameters:
+      - name: X-PTracker-Office-Id
+        in: header
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shipmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: movementId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShipmentMovementDto'
+  /shipments/{shipmentId}/arrival:
+    put:
+      tags:
+      - shipment-controller
+      operationId: registerArrival
+      parameters:
+      - name: X-PTracker-Office-Id
+        in: header
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shipmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShipmentMovementDto'
+  /shipments:
+    post:
+      tags:
+      - shipment-controller
+      operationId: addShipment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShipmentDto'
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShipmentDto'
+  /shipments/{shipmentId}:
+    get:
+      tags:
+      - shipment-controller
+      operationId: findById
+      parameters:
+      - name: shipmentId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShipmentMoveHistoryDto'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        description:
+          type: string
+    ShipmentDto:
+      required:
+      - recipientAddress
+      - recipientIndex
+      - recipientName
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum:
+          - LETTER
+          - PACKAGE
+          - PARCEL
+          - POSTCARD
+        recipientIndex:
+          type: integer
+          format: int32
+        recipientAddress:
+          type: string
+        recipientName:
+          type: string
+        received:
+          type: boolean
+    ShipmentMovementDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        shipmentType:
+          type: string
+          enum:
+          - LETTER
+          - PACKAGE
+          - PARCEL
+          - POSTCARD
+        postalIndex:
+          type: integer
+          format: int32
+        arrived:
+          type: string
+          format: date-time
+        departed:
+          type: string
+          format: date-time
+    ShipmentMoveHistoryDto:
+      required:
+      - recipientAddress
+      - recipientIndex
+      - recipientName
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum:
+          - LETTER
+          - PACKAGE
+          - PARCEL
+          - POSTCARD
+        recipientIndex:
+          type: integer
+          format: int32
+        recipientAddress:
+          type: string
+        recipientName:
+          type: string
+        movements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipmentMovementDto'
